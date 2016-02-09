@@ -1,7 +1,7 @@
 module V1
   class StoriesController < ApplicationController
     skip_before_action :authenticate_user_from_token!, only: [:index, :show]
-    
+
     # GET /v1/stories
     # Get all the stories
     def index
@@ -25,7 +25,7 @@ module V1
         render json: { error: t('story_create_error') }, status: :unprocessable_entity
       end
     end
-    
+
     private
 
     def story_params

@@ -10,24 +10,16 @@ class ApplicationController < ActionController::API
   # Authenticates the user with OAuth2 Resource Owner Password Credentials Grant
   def authenticate_user_from_token!
     auth_token = request.headers['Authorization']
-
-    if auth_token
-      authenticate_with_auth_token auth_token
-    else
-      authentication_error
-    end
+    auth_token ? authenticate_with_auth_token(auth_token) : authentication_error
   end
 
   private
 
-  def authenticate_with_auth_token auth_token 
-    unless auth_token.include?(':')
-      authentication_error
-      return
-    end
+  def authenticate_with_auth_token(auth_token)
+    return authentication_error unless auth_token.include?(':')
 
     user_id = auth_token.split(':').first
-    user = User.where(id: user_id).first
+    user    = User.find(user_id)
 
     if user && Devise.secure_compare(user.access_token, auth_token)
       # User can access
